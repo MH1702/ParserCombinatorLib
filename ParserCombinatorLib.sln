@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib", "ParserCombinatorLib.csproj", "{1944F410-9E8D-4247-AB79-2CD553088E7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib", "ParserCombinatorLib\ParserCombinatorLib.csproj", "{D7DA5ED7-73FF-4B1E-B856-81E474FABC4E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib.Playground", "..\Playground\ParserCombinatorLib.Playground.csproj", "{C77DF79C-6FF5-476A-80D6-FE1E252C26FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib.Playground", "Playground\ParserCombinatorLib.Playground.csproj", "{B3832AD4-5CCD-45EF-81D8-34D5F7967396}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib.JsonParser", "..\JsonParser\ParserCombinatorLib.JsonParser.csproj", "{8B4F0694-3C67-4557-AFD5-EBBA5E9B8FB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib.JsonParser", "JsonParser\ParserCombinatorLib.JsonParser.csproj", "{70D87C34-6FA7-4CC5-8F33-94A528F9824A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserCombinatorLib.JsonParser.Tests", "..\Tests\ParserCombinatorLib.JsonParser.Tests.csproj", "{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +17,22 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1944F410-9E8D-4247-AB79-2CD553088E7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1944F410-9E8D-4247-AB79-2CD553088E7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1944F410-9E8D-4247-AB79-2CD553088E7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1944F410-9E8D-4247-AB79-2CD553088E7C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C77DF79C-6FF5-476A-80D6-FE1E252C26FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C77DF79C-6FF5-476A-80D6-FE1E252C26FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C77DF79C-6FF5-476A-80D6-FE1E252C26FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C77DF79C-6FF5-476A-80D6-FE1E252C26FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B4F0694-3C67-4557-AFD5-EBBA5E9B8FB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B4F0694-3C67-4557-AFD5-EBBA5E9B8FB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B4F0694-3C67-4557-AFD5-EBBA5E9B8FB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B4F0694-3C67-4557-AFD5-EBBA5E9B8FB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7DA5ED7-73FF-4B1E-B856-81E474FABC4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7DA5ED7-73FF-4B1E-B856-81E474FABC4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7DA5ED7-73FF-4B1E-B856-81E474FABC4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7DA5ED7-73FF-4B1E-B856-81E474FABC4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3832AD4-5CCD-45EF-81D8-34D5F7967396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3832AD4-5CCD-45EF-81D8-34D5F7967396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3832AD4-5CCD-45EF-81D8-34D5F7967396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3832AD4-5CCD-45EF-81D8-34D5F7967396}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70D87C34-6FA7-4CC5-8F33-94A528F9824A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70D87C34-6FA7-4CC5-8F33-94A528F9824A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70D87C34-6FA7-4CC5-8F33-94A528F9824A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70D87C34-6FA7-4CC5-8F33-94A528F9824A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

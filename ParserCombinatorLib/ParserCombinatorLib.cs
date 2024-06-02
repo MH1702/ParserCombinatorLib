@@ -1,19 +1,52 @@
-﻿namespace ParserCombinatorLib {
+﻿using System.Runtime.Serialization;
+
+namespace ParserCombinatorLib {
+
+	public class ParsingException : Exception {
+		public ParsingException() {
+		}
+
+		public ParsingException(string? message) : base(message) {
+		}
+
+		public ParsingException(string? message, Exception? innerException) : base(message, innerException) {
+		}
+	}
+
 	public class Parser {
+		public record ParserInput {
+			public string String { get; init; }
+			public int Index { get; init; }
+		}
+
+		public readonly struct ParserResult {
+			public bool Success { get; init; }
+			public dynamic? Value { get; init; }
+			public int Index { get; init; }
+		}
+
 		public required string Name { get; init; }
-		public required Func<(string, int), (bool, dynamic?, int)> Parse { get; init; }
+		public required Func<ParserInput, ParserResult> Parse { get; init; }
 
 		public Parser Map(Func<dynamic?, dynamic?> mapper) {
 			return new Parser() {
 				Name = $"{Name}_mapped",
 				Parse = (input) => {
-					var x = Parse(input);
+					var intermediate_result = Parse(input);
 
-					if (!x.Item1) {
-						return (false, null, input.Item2);
+					if (!intermediate_result.Success) {
+						return new ParserResult() {
+							Success = false,
+							Value = null,
+							Index = input.Index,
+						};
 					}
 
-					return (true, mapper(x.Item2), x.Item3);
+					return new ParserResult() {
+						Success = true,
+						Value = mapper(intermediate_result.Value),
+						Index = intermediate_result.Index,
+					};
 				}
 			};
 		}
@@ -22,13 +55,13 @@
 			return new Parser() {
 				Name = $"{Name}_mapped",
 				Parse = (input) => {
-					var x = Parse(input);
+					var result = Parse(input);
 
-					if (!x.Item1) {
-						throw new Exception($"{message ?? "ERROR"}\nat {input.Item2}: {input.Item1[input.Item2..]}");
+					if (!result.Success) {
+						throw new ParsingException($"{message ?? "ERROR"}\nat {input.Index}: {input.String[input.Index..]}");
 					}
 
-					return x;
+					return result;
 				}
 			};
 		}
@@ -37,15 +70,24 @@
 			return new Parser() {
 				Name = name,
 				Parse = (input) => {
-					if (input.Item2 >= input.Item1.Length) throw new EndOfStreamException();
+					if (input.Index >= input.String.Length) throw new EndOfStreamException();
 
-					var (str, i) = input;
-
-					var str_slice = str[i..];
+					var str_slice = input.String[input.Index..];
 					var first_char = str_slice[0];
 
-					if (first_char == c) return (true, first_char, i + 1);
-					else return (false, null, i);
+					if (first_char != c) {
+						return new ParserResult() {
+							Success = false,
+							Value = null,
+							Index = input.Index,
+						};
+					}
+
+					return new ParserResult() {
+						Success = true,
+						Value = first_char,
+						Index = input.Index + 1,
+					};
 				}
 			};
 		}
@@ -54,15 +96,24 @@
 			return new Parser() {
 				Name = name,
 				Parse = (input) => {
-					if (input.Item2 >= input.Item1.Length) throw new EndOfStreamException();
+					if (input.Index >= input.String.Length) throw new EndOfStreamException();
 
-					var (str, i) = input;
-
-					var str_slice = str[i..];
+					var str_slice = input.String[input.Index..];
 					var first_char = str_slice[0];
 
-					if (predicate(first_char)) return (true, first_char, i + 1);
-					else return (false, null, i);
+					if (!predicate(first_char)) {
+						return new ParserResult() {
+							Success = false,
+							Value = null,
+							Index = input.Index,
+						};
+					}
+
+					return new ParserResult() {
+						Success = true,
+						Value = first_char,
+						Index = input.Index + 1,
+					};
 				}
 			};
 		}
@@ -71,15 +122,24 @@
 			return new Parser() {
 				Name = name,
 				Parse = (input) => {
-					if (input.Item2 >= input.Item1.Length) throw new EndOfStreamException();
+					if (input.Index >= input.String.Length) throw new EndOfStreamException();
 
-					var (str, i) = input;
-
-					var str_slice = str[i..];
+					var str_slice = input.String[input.Index..];
 					var first_char = str_slice[0];
 
-					if (chars.Contains(first_char)) return (true, first_char, i + 1);
-					else return (false, null, i);
+					if (!chars.Contains(first_char)) {
+						return new ParserResult() {
+							Success = false,
+							Value = null,
+							Index = input.Index,
+						};
+					}
+
+					return new ParserResult() {
+						Success = true,
+						Value = first_char,
+						Index = input.Index + 1,
+					};
 				}
 			};
 		}
@@ -89,12 +149,16 @@
 				Name = name,
 				Parse = (input) => {
 					foreach (var parser in parsers) {
-						var x = parser.Parse(input);
+						var result = parser.Parse(input);
 
-						if (x.Item1) return x;
+						if (result.Success) return result;
 					}
 
-					return (false, null, input.Item2);
+					return new ParserResult() {
+						Success = false,
+						Value = null,
+						Index = input.Index,
+					};
 				}
 			};
 		}
@@ -105,67 +169,95 @@
 				Parse = (input) => {
 					List<dynamic?> list = [];
 
-					var x = input;
+					var intermediate_input = input;
 
 					while (true) {
-						if (input.Item2 >= input.Item1.Length) return (true, list, x.Item2);
+						if (input.Index >= input.String.Length) {
+							return new ParserResult() {
+								Success = true,
+								Value = list,
+								Index = intermediate_input.Index,
+							};
+						}
 
-						var (success, result, index) = parser.Parse(x);
-						if (!success) {
+						var result = parser.Parse(intermediate_input);
+						if (!result.Success) {
 							break;
 						}
 
-						x = (x.Item1, index);
+						intermediate_input = intermediate_input with { Index = result.Index };
 
-						list.Add(result);
+						list.Add(result.Value);
 
 						if (list.Count == max) break;
 					}
 
 					if (min is not null && list.Count < min.Value) {
-						return (false, null, input.Item2);
+						return new ParserResult() {
+							Success = false,
+							Value = null,
+							Index = input.Index,
+						};
 					}
 
-					return (true, list, x.Item2);
+					return new ParserResult() {
+						Success = true,
+						Value = list,
+						Index = intermediate_input.Index,
+					};
 				}
 			};
 		}
 
 		public class SequenceElement {
-			public Parser ActualParser => Parser ?? ParserFunc();
+			public Parser Parser => ParserDirect ?? ParserFunc();
 
-			public Parser? Parser { get; init; }
+			public Parser? ParserDirect { get; init; }
 			public Func<Parser>? ParserFunc { get; init; }
 
 			public bool Optional { get; set; }
 			public bool Include { get; set; }
 		}
 
-		public static Parser Sequence(IEnumerable<SequenceElement> parsers, string name) {
+		public static Parser Sequence(IEnumerable<SequenceElement> sequence_elements, string name) {
 			return new Parser() {
 				Name = name,
 				Parse = (input) => {
 					List<dynamic?> list = [];
 
-					var x = input;
+					var intermediate_input = input;
 
-					foreach (var y in parsers) {
-						var (success, result, index) = y.ActualParser.Parse(x);
+					foreach (var sequence_element in sequence_elements) {
+						try {
+							var result = sequence_element.Parser.Parse(intermediate_input);
 
-						if (!success) {
-							if (y.Optional) continue;
+							if (!result.Success) {
+								if (sequence_element.Optional) continue;
 
-							return (false, list, x.Item2);
-						}
+								return new ParserResult() {
+									Success = false,
+									Value = list,
+									Index = intermediate_input.Index,
+								};
+							}
 
-						x = (x.Item1, index);
+							intermediate_input = intermediate_input with { Index = result.Index };
 
-						if (y.Include) {
-							list.Add(result);
+							if (sequence_element.Include) {
+								list.Add(result.Value);
+							}
+						} catch (ParsingException) {
+							if (sequence_element.Optional) continue;
+
+							throw;
 						}
 					}
 
-					return (true, list, x.Item2);
+					return new ParserResult() {
+						Success = true,
+						Value = list,
+						Index = intermediate_input.Index,
+					};
 				}
 			};
 		}
@@ -176,13 +268,24 @@
 				Name = name,
 				Parse = (input) => {
 					var x = literal.Select(c => {
-						return new SequenceElement() { Parser = Char(c, $"{name}_{c}"), Optional = false, Include = false };
+						return new SequenceElement() { ParserDirect = Char(c, $"{name}_{c}"), Optional = false, Include = false };
 					});
 
-					var (success, _, remaining) = Sequence(x, $"{name}_sequence").Parse(input);
+					var result = Sequence(x, $"{name}_sequence").Parse(input);
 
-					if (!success) return (false, null, input.Item2);
-					else return (true, value, remaining);
+					if (!result.Success) {
+						return new ParserResult() {
+							Success = false,
+							Value = null,
+							Index = input.Index,
+						};
+					}
+
+					return new ParserResult() {
+						Success = true,
+						Value = value,
+						Index = result.Index,
+					};
 				}
 			};
 		}
