@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib.Playgro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib.JsonParser", "JsonParser\ParserCombinatorLib.JsonParser.csproj", "{70D87C34-6FA7-4CC5-8F33-94A528F9824A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserCombinatorLib.JsonParser.Tests", "..\Tests\ParserCombinatorLib.JsonParser.Tests.csproj", "{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCombinatorLib.JsonParser.Tests", "..\Tests\ParserCombinatorLib.JsonParser.Tests.csproj", "{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParserCombinatorLib.DSL", "DSL\ParserCombinatorLib.DSL.csproj", "{7682C70D-2A33-4CC9-B84A-F6BBE83528DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E264781-5DE6-4B3F-8944-DD0B9F4D54E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7682C70D-2A33-4CC9-B84A-F6BBE83528DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7682C70D-2A33-4CC9-B84A-F6BBE83528DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7682C70D-2A33-4CC9-B84A-F6BBE83528DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7682C70D-2A33-4CC9-B84A-F6BBE83528DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

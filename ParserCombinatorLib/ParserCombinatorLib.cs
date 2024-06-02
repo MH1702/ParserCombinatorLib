@@ -215,15 +215,16 @@ namespace ParserCombinatorLib {
 			public Parser? ParserDirect { get; init; }
 			public Func<Parser>? ParserFunc { get; init; }
 
-			public bool Optional { get; set; }
-			public bool Include { get; set; }
+			public string? Key { get; init; }
+
+			public required bool Optional { get; init; }
 		}
 
 		public static Parser Sequence(IEnumerable<SequenceElement> sequence_elements, string name) {
 			return new Parser() {
 				Name = name,
 				Parse = (input) => {
-					List<dynamic?> list = [];
+					Dictionary<string, dynamic?> keys = [];
 
 					var intermediate_input = input;
 
@@ -236,15 +237,15 @@ namespace ParserCombinatorLib {
 
 								return new ParserResult() {
 									Success = false,
-									Value = list,
+									Value = keys,
 									Index = intermediate_input.Index,
 								};
 							}
 
 							intermediate_input = intermediate_input with { Index = result.Index };
 
-							if (sequence_element.Include) {
-								list.Add(result.Value);
+							if (sequence_element.Key is not null) {
+								keys[sequence_element.Key] = result.Value;
 							}
 						} catch (ParsingException) {
 							if (sequence_element.Optional) continue;
@@ -255,7 +256,7 @@ namespace ParserCombinatorLib {
 
 					return new ParserResult() {
 						Success = true,
-						Value = list,
+						Value = keys,
 						Index = intermediate_input.Index,
 					};
 				}
@@ -268,7 +269,7 @@ namespace ParserCombinatorLib {
 				Name = name,
 				Parse = (input) => {
 					var x = literal.Select(c => {
-						return new SequenceElement() { ParserDirect = Char(c, $"{name}_{c}"), Optional = false, Include = false };
+						return new SequenceElement() { ParserDirect = Char(c, $"{name}_{c}"), Optional = false };
 					});
 
 					var result = Sequence(x, $"{name}_sequence").Parse(input);
