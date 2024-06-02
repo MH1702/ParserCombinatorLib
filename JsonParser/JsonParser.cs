@@ -61,16 +61,9 @@ namespace ParserCombinatorLib {
 							new() { ParserDirect = Char('u', "escaped_unicode_start"), Optional = false, Key = "escaped_unicode_start" },
 							new() { ParserDirect = Many(Satisfies(c => char.IsAsciiHexDigit(c), "escaped_unicode_hex_digit").Expect("Expected Hex-Digit"), "escaped_unicode_hex", 4, 4).Expect("Expected exactly 4 Hex-Digits"), Optional = false, Key = "escaped_unicode_hex" },
 						], "escaped_unicode").Map(x => $"{x["escaped_unicode_start"]}{string.Concat(x["escaped_unicode_hex"])}"),
-					], "escaped_any"), Optional = false, Key = "escaped" },
+					], "escaped_any"), Optional = false, Key = "escaped_char" },
 				], "escaped").Map(x => {
-					Dumpify.DumpExtensions.Dump(x);
-
-				if (x.Count == 1) {
-					return x[0];
-				} else {
-					// Escaped Unicode Char
-					return $"{x[0]}{x[1]}";
-				}
+					return $"{x["escaped_start"]}{x["escaped_char"]}";
 			})
 			], "character");
 
