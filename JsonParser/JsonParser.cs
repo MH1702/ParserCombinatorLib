@@ -87,7 +87,7 @@ namespace ParserCombinatorLib {
 				new() { ParserDirect = Many(Sequence([
 					new() { ParserDirect = Char(',', "object_members_delimiter"), Optional = false },
 					new() { ParserFunc = () => json_object_member_parser, Optional = false, Key = "object_members_rest" },
-				], "object_members_sequence").Map(x => x["object_members_rest"]), "object_members_many"), Optional = true, Key = "object_members" },
+				], "object_members_sequence").Map(x => x["object_members_rest"]), "object_members_many"), Optional = true, Key = "object_members_rest" },
 
 			], "object_members").Map(x => {
 				var list = new List<KeyValuePair<string, dynamic?>>() { x["object_members_first"] };
